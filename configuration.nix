@@ -14,6 +14,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.tmp.cleanOnBoot = true;
 
   # Networking
   networking.hostName = "nixinante"; # Define your hostname.
@@ -45,6 +46,12 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  # Hyprland
+  programs.hyprland.enable = true;
+  programs.hyprlock.enable = true;
+  services.hypridle.enable = true;
+  
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -52,7 +59,7 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = false;
+  # services.printing.enable = false;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -116,6 +123,17 @@
      gnome-tweaks
      lutris
      git
+     kitty
+     waybar
+     libnotify
+     wofi
+     xdg-desktop-portal-hyprland
+     hyprpaper
+     hypridle
+     hyprlock
+     swaynotificationcenter
+     waypaper
+     wlogout
   ];
 
   ### Nvidia :( ###
@@ -147,6 +165,13 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+ 
+  # Automatic Garbage Collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
