@@ -10,15 +10,22 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.tmp.cleanOnBoot = true;
 
-  # Networking
-  networking.hostName = "nixinante"; # Define your hostname.
+  networking.hostName = "Rocinante"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -43,14 +50,8 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Hyprland
-  programs.hyprland.enable = true;
-  programs.hyprlock.enable = true;
-  services.hypridle.enable = true;
-  
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -59,7 +60,7 @@
   };
 
   # Enable CUPS to print documents.
-  # services.printing.enable = false;
+  # services.printing.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -90,63 +91,54 @@
     ];
   };
 
-  # Install system programs
+  # Direct Programs
   programs.firefox.enable = false;
   services.flatpak.enable = true;
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    remotePlay.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
   };
-  
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
   # Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
   ];
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-     wget
-     fish
-     fastfetch
-     linux-firmware
-     vesktop
-     protonup-qt
-     gnome-extension-manager
-     gnome-tweaks
-     lutris
-     git
-     kitty
-     waybar
-     libnotify
-     wofi
-     xdg-desktop-portal-hyprland
-     hyprpaper
-     hypridle
-     hyprlock
-     swaynotificationcenter
-     waypaper
-     wlogout
+    fish
+    fastfetch
+    linux-firmware
+    vesktop
+    protonup-qt
+    gnome-extension-manager
+    gnome-tweaks
+    lutris
+    git
+    ptyxis
+    brave
+    niri
+    fuzzel
+    xwayland-satellite
+    swaybg
+    waypaper
   ];
 
-  ### Nvidia :( ###
   services.xserver.videoDrivers = ["nvidia"];
   hardware.nvidia = {
-    modesetting.enable = true;
+    modesetting.enable=true;
     powerManagement.enable = false;
     powerManagement.finegrained = false;
     open = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -165,13 +157,6 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
- 
-  # Automatic Garbage Collection
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -179,6 +164,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 
 }
